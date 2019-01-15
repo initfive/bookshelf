@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import * as BooksAPI from "./BooksAPI";
 
 class Search extends Component {
   state = {
@@ -7,14 +8,18 @@ class Search extends Component {
   };
 
   updateQuery = query => {
-    this.setState(() => ({
-      query: query.trim()
-    }));
+    BooksAPI.update().then(books => {
+      const newBook = books.filter(book => book.shelf === "currentlyReading");
+
+      this.setState(() => ({
+        query
+      }));
+    });
   };
 
   render() {
-    //const showingBooks =
-    //query === "" ? this.props.books : this.props.books.filter;
+    // const showingBooks =
+    // query === "" ? this.props.books : this.props.books.filter;
 
     return (
       <div className="search-books">
@@ -33,7 +38,7 @@ class Search extends Component {
               type="text"
               placeholder="Search by title or author"
               value={this.state.query}
-              onChange={event => this.updateQuery(event.target.value)}
+              onChange={event => this.updateQuery(this.updateQuery)}
             />
             {/*
             NOTES: {JSON.stringify(this.state.query)}
