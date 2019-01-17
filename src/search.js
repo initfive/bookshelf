@@ -7,19 +7,26 @@ class Search extends Component {
     query: ""
   };
 
+  // this is updating my query state
   updateQuery = query => {
-    BooksAPI.update().then(books => {
-      const newBook = books.filter(book => book.shelf === "currentlyReading");
-
-      this.setState(() => ({
-        query
-      }));
+    this.setState({
+      query
     });
   };
 
   render() {
-    // const showingBooks =
-    // query === "" ? this.props.books : this.props.books.filter;
+    const { query } = this.state;
+
+    {
+      /*
+      const showingResults =
+      query === ""
+        ? query
+        : query.filter(c =>
+            c.title.toLowerCase().includes(query.toLowerCase())
+          );
+    */
+    }
 
     return (
       <div className="search-books">
@@ -37,8 +44,8 @@ class Search extends Component {
             <input
               type="text"
               placeholder="Search by title or author"
-              value={this.state.query}
-              onChange={event => this.updateQuery(this.updateQuery)}
+              value={query}
+              onChange={event => this.updateQuery(event.target.value)}
             />
             {/*
             NOTES: {JSON.stringify(this.state.query)}
@@ -47,6 +54,7 @@ class Search extends Component {
           </div>
         </div>
         <div className="search-books-results">
+          {JSON.stringify(query)}
           <ol className="books-grid" />
         </div>
       </div>
@@ -55,3 +63,22 @@ class Search extends Component {
 }
 
 export default Search;
+
+// {
+//   showingResults.map(book => (
+//     <li>
+//       <div
+//         className="book-cover"
+//         style={{
+//           width: 128,
+//           height: 193,
+//           backgroundImage: `url("${
+//             book.imageLinks ? book.imageLinks.thumbnail : ""
+//           }")`
+//         }}
+//       />
+//       <div className="book-title">{book.title}</div>
+//       <div className="book-authors">{book.authors}</div>
+//     </li>
+//   ));
+// }

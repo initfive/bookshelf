@@ -23,25 +23,24 @@ class BooksApp extends React.Component {
   }
 
   sortBooks = (event, book) => {
-    // get books array from state
     const { books } = this.state;
 
-    // get the value the user selected
+    // value the user selected
     const { value } = event.target;
 
-    // get the book we want to update
+    // gets the book we want to update
     const bookToUpdate = books.filter(b => b.id === book.id)[0];
 
-    // update the shelf property with the selected value
+    // updates the shelf property with the selected value
     bookToUpdate.shelf = value;
 
-    // get the old book array, and omit the old book value
+    // gets the old book array, and omit the old book value
     const booksArray = books.filter(b => b.id !== book.id);
 
     // push the updated book into the "new" books array, and update state
     booksArray.push(bookToUpdate);
 
-    // update the state with new books array
+    // updates the state with new books array
     this.setState({ books: booksArray });
   };
 
