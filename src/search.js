@@ -1,10 +1,53 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
+import Book from "./book";
 
 class Search extends Component {
   state = {
-    query: ""
+    query: "",
+    showingBooks: []
+  };
+
+  updateQuery = query => {
+    this.setState({ query: query }, () => {
+      this.searchBooks(this.state.query.trim());
+    });
+  };
+
+  // Receives a query string and perform and API search
+  searchBooks = query => {
+    // Query exists
+    if (query) {
+      BooksAPI.search(query).then(searchedBooks => {
+        // Search returns results
+        if (searchedBooks.length > 0) {
+          // Filter out searchedBooks that don't have thumbnail and then look for copies of books in the original books prop. If a match exists, take the shelf property of the book from main menu. Else set property to "none"
+          searchedBooks = searchedBooks
+            .filter(searchedBook => searchedBook.imageLinks)
+            .map(searchedBook => {
+              for (let book of this.props.books) {
+                if (book.id === searchedBook.id) {
+                  searchedBook.shelf = book.shelf;
+                  return searchedBook;
+                } else {
+                  searchedBook.shelf = "none";
+                }
+              }
+              return searchedBook;
+            });
+          this.setState({ showingBooks: searchedBooks });
+        } else {
+          this.setState({ showingBooks: [] });
+        }
+      });
+    } else {
+      this.setState({ showingBooks: [] });
+    }
+  };
+  state = {
+    query: "",
+    books: []
   };
 
   // this is updating my query state
@@ -12,10 +55,19 @@ class Search extends Component {
     this.setState({
       query
     });
+    BooksAPI.search(query).then(book => {
+      this.setState({
+        books
+      });
+    });
   };
+
+  // BooksAPI.update(book, shelf)
+  //   .then( ...)
 
   render() {
     const { query } = this.state;
+    const { onSortingBook, title, book } = this.props;
 
     {
       /*
@@ -40,6 +92,9 @@ class Search extends Component {
 
             However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
             you don't find a specific author or title. Every search is limited by search terms.
+
+            NOTES: {JSON.stringify(this.state.query)}
+            is nice way to check our state
           */}
             <input
               type="text"
@@ -47,15 +102,14 @@ class Search extends Component {
               value={query}
               onChange={event => this.updateQuery(event.target.value)}
             />
-            {/*
-            NOTES: {JSON.stringify(this.state.query)}
-            is nice way to check our state
-            */}
           </div>
         </div>
         <div className="search-books-results">
-          {JSON.stringify(query)}
-          <ol className="books-grid" />
+          <ol className="books-grid">
+            {this.books.map(book => (
+              <Book key={book.id} book={book} onSortingBook={onSortingBook} />
+            ))}
+          </ol>
         </div>
       </div>
     );
