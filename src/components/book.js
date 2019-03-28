@@ -1,8 +1,28 @@
 import React from "react";
+import * as BooksAPI from "./../lib/BooksAPI";
 
-class Bookshelf extends React.Component {
+class Book extends React.Component {
+  state = {
+    avaliableShelfs: ["currentlyReading", "wantToRead"]
+  };
+
+  moveToOtherShelf = (event, book) => {
+    console.log(event.currentTarget.value);
+    const shelf = event.currentTarget.value;
+    console.log(book);
+    //onSortingBook
+    BooksAPI.update(book, shelf)
+      .then(result => {
+        this.props.onSortingBook();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
-    const { book, onSortingBook } = this.props;
+    const { book } = this.props;
+    const { avaliableShelfs } = this.state;
     return (
       <li>
         <div className="book">
@@ -19,7 +39,7 @@ class Bookshelf extends React.Component {
             />
             <div className="book-shelf-changer">
               <select
-                onChange={event => onSortingBook(event.target.value, book)}
+                onChange={event => this.moveToOtherShelf(event, book)}
                 value={book.shelf}
               >
                 <option value="move">Move to...</option>
@@ -39,4 +59,4 @@ class Bookshelf extends React.Component {
   }
 }
 
-export default Bookshelf;
+export default Book;
