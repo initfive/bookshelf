@@ -30,7 +30,6 @@ class Search extends Component {
   render() {
     const { query } = this.state;
     const { onSortingBook } = this.props;
-    console.log(onSortingBook);
     return (
       <div className="search-books">
         <div className="search-books-bar">
