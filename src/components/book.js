@@ -8,7 +8,7 @@ class Book extends React.Component {
 
   moveToOtherShelf = (event, book) => {
     const shelf = event.currentTarget.value;
-    //onSortingBook
+    //onSortingBook1
     BooksAPI.update(book, shelf)
       .then(result => {
         this.props.onSortingBook();
